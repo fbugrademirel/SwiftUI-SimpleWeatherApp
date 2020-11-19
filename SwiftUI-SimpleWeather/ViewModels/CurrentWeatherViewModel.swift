@@ -6,22 +6,41 @@
 //
 
 import Foundation
+import CoreLocation
 
-final class CurrentWeatherViewModel: ObservableObject {
+final class CurrentWeatherViewModel: NSObject, ObservableObject {
     
     @Published var currentWeather: CurrentWeatherModel? = nil
-    var cityName: String? = nil
+    @Published var searchTerm: String = ""
+
+    private var locationManager: CLLocationManager = {
+            let lm = CLLocationManager()
+            lm.desiredAccuracy = kCLLocationAccuracyThreeKilometers
+            return lm
+    }()
     
-    func load() {
-        if let cityName = cityName {
-            fetchWeather(by: cityName)
+    private var location: CLLocation? = nil {
+        didSet {
+            if let location = location {
+                fetchWeather(for: .coordinates(location))
+            }
         }
     }
     
-    
-    private func fetchWeather(by cityName: String) {
+    func load() {
+        locationManager.delegate = self
+        locationManager.requestWhenInUseAuthorization()
+        locationManager.requestLocation()
         
-        WeatherDataAPI().getWeatherInfo(by: cityName) { [weak self] result in
+    }
+
+    func fetchCurrentWeather(by cityName: String) {
+        fetchWeather(for: .cityName(cityName))
+    }
+    
+    private func fetchWeather(for info: WeatherDataAPI.LocationInformation) {
+        
+        WeatherDataAPI().getWeatherInfo(by: info) { [weak self] result in
             guard let self = self else {return}
             switch result {
             case .success(let data):
@@ -41,4 +60,19 @@ final class CurrentWeatherViewModel: ObservableObject {
         }
     }
 }
+
+//MARK: - Location Manager
+extension CurrentWeatherViewModel: CLLocationManagerDelegate {
+    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+        if let location = locations.last {
+            manager.stopUpdatingLocation()
+            self.location = location
+        }
+    }
+
+    func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
+        print(error.localizedDescription)
+    }
+}
+
 

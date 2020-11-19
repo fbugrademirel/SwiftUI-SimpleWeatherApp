@@ -9,56 +9,31 @@ import SwiftUI
 
 struct ContentView: View {
     
-    @State private var cityName: String = ""
     @ObservedObject private var viewModel = CurrentWeatherViewModel()
     
-    
-    
+    init() {
+        self.viewModel.load()
+    }
+
     var body: some View {
         
-        NavigationView {
+        if !viewModel.searchTerm.isEmpty {
+            viewModel.fetchCurrentWeather(by: viewModel.searchTerm)
+        }
+        
+        return NavigationView {
             
-            ScrollView {
-                
-                VStack(alignment: .trailing, spacing: 5) {
-                    
-                    SearchView(cityName: $cityName)
-                    
-                    Text("City Name")
-                        .fontWeight(.light)
-                        .font(.system(size: 32))
-                        .padding(.trailing, 20)
-
-                    Image(systemName: "\(viewModel.currentWeather?.conditionNameForSFIcons ?? "sun.max")")
-                        .resizable()
-                        .frame(width: 100, height: 100)
-                        .padding(20)
-                    
-                    Text("Date")
-                        .fontWeight(.light)
-                        .font(.system(size: 32))
-                        .padding(.trailing, 20)
-                    
-                    HStack(alignment: .center, spacing: 0) {
-                        
-                        Spacer()
-                        
-                        Text("TEMP")
-                            .fontWeight(.light)
-                            .font(.system(size: 32))
-                            .padding(.trailing, 0)
-                        
-                        Text("°C")
-                            .fontWeight(.light)
-                            .font(.system(size: 32))
-                            .padding(.leading, 0)
-                            .padding(.trailing, 20)
+            VStack {
+            
+                SearchView(cityName: self.$viewModel.searchTerm)
+                ScrollView {
+                    if let model = self.viewModel.currentWeather {
+                        CurrentWeatherView(viewModel: model)
                     }
-                    
                     Spacer()
-                    
-                }.foregroundColor(.blue)
+                }
                 
+                Spacer()
             }
             
         }.navigationBarTitle("Current Weather", displayMode: .inline)
