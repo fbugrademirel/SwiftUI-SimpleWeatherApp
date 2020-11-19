@@ -17,7 +17,6 @@
 		7CF616752565A738004DB6C8 /* WeatherDataAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CF616742565A738004DB6C8 /* WeatherDataAPI.swift */; };
 		7CF616842565B2E7004DB6C8 /* CurrentWeatherViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CF616832565B2E7004DB6C8 /* CurrentWeatherViewModel.swift */; };
 		7CF616892565CAAA004DB6C8 /* CurrentWeatherModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CF616882565CAAA004DB6C8 /* CurrentWeatherModel.swift */; };
-		7CF616912565D454004DB6C8 /* SearchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CF616902565D454004DB6C8 /* SearchView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -33,7 +32,6 @@
 		7CF616742565A738004DB6C8 /* WeatherDataAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeatherDataAPI.swift; sourceTree = "<group>"; };
 		7CF616832565B2E7004DB6C8 /* CurrentWeatherViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CurrentWeatherViewModel.swift; sourceTree = "<group>"; };
 		7CF616882565CAAA004DB6C8 /* CurrentWeatherModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CurrentWeatherModel.swift; sourceTree = "<group>"; };
-		7CF616902565D454004DB6C8 /* SearchView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -124,7 +122,6 @@
 		7CF6167E2565B258004DB6C8 /* Views */ = {
 			isa = PBXGroup;
 			children = (
-				7CF616902565D454004DB6C8 /* SearchView.swift */,
 				7C7D5C882565EAE60020A602 /* CurrentWeatherView.swift */,
 			);
 			path = Views;
@@ -208,7 +205,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				7CF616892565CAAA004DB6C8 /* CurrentWeatherModel.swift in Sources */,
-				7CF616912565D454004DB6C8 /* SearchView.swift in Sources */,
 				7CF616752565A738004DB6C8 /* WeatherDataAPI.swift in Sources */,
 				7C7D5C892565EAE60020A602 /* CurrentWeatherView.swift in Sources */,
 				7CF616702565A526004DB6C8 /* Weather.swift in Sources */,

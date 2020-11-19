@@ -11,7 +11,7 @@ import CoreLocation
 final class CurrentWeatherViewModel: NSObject, ObservableObject {
     
     @Published var currentWeather: CurrentWeatherModel? = nil
-    @Published var searchTerm: String = ""
+    var searchTerm: String = ""
 
     private var locationManager: CLLocationManager = {
             let lm = CLLocationManager()
@@ -31,11 +31,12 @@ final class CurrentWeatherViewModel: NSObject, ObservableObject {
         locationManager.delegate = self
         locationManager.requestWhenInUseAuthorization()
         locationManager.requestLocation()
-        
     }
 
-    func fetchCurrentWeather(by cityName: String) {
-        fetchWeather(for: .cityName(cityName))
+    func fetchCurrentWeather(by: WeatherDataAPI.LocationInformation) {
+        if let cityName = self.searchTerm.addingPercentEncoding(withAllowedCharacters: .urlHostAllowed) {
+            fetchWeather(for: .cityName(cityName))
+        }
     }
     
     private func fetchWeather(for info: WeatherDataAPI.LocationInformation) {

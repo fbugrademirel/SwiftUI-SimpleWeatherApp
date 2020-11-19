@@ -10,7 +10,7 @@ import SwiftUI
 struct CurrentWeatherView: View {
     
     let viewModel: CurrentWeatherModel
-        
+    
     var body: some View {
         
         VStack(alignment: .trailing, spacing: 5) {
@@ -22,7 +22,8 @@ struct CurrentWeatherView: View {
 
             Image(systemName: viewModel.conditionNameForSFIcons)
                 .resizable()
-                .frame(width: 100, height: 100)
+                .frame(width: 150, height: 150, alignment: /*@START_MENU_TOKEN@*/.center/*@END_MENU_TOKEN@*/)
+                .aspectRatio(contentMode: .fit)
                 .padding(20)
             
             Text(viewModel.dateString)

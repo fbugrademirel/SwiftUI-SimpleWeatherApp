@@ -17,22 +17,17 @@ struct ContentView: View {
 
     var body: some View {
         
-        if !viewModel.searchTerm.isEmpty {
-            viewModel.fetchCurrentWeather(by: viewModel.searchTerm)
-        }
-        
-        return NavigationView {
+        NavigationView {
             
             VStack {
             
-                SearchView(cityName: self.$viewModel.searchTerm)
+                searchView()
                 ScrollView {
                     if let model = self.viewModel.currentWeather {
                         CurrentWeatherView(viewModel: model)
                     }
                     Spacer()
                 }
-                
                 Spacer()
             }
             
@@ -46,3 +41,23 @@ struct ContentView_Previews: PreviewProvider {
     }
 }
 
+extension ContentView {
+    fileprivate func searchView() -> some View {
+        return HStack {
+            
+            Spacer()
+            
+            Image(systemName: "magnifyingglass")
+            
+            TextField("Search for city...", text: $viewModel.searchTerm, onCommit: {
+                viewModel.fetchCurrentWeather(by: .cityName(viewModel.searchTerm))
+            })
+            .foregroundColor(.primary)
+            .padding(10)
+            Spacer()
+        }.foregroundColor(.secondary)
+        .background(Color(.secondarySystemBackground))
+        .cornerRadius(10)
+        .padding(10)
+    }
+}
