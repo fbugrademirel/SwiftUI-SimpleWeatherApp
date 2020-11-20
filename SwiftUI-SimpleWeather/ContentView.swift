@@ -43,6 +43,7 @@ extension ContentView {
             
             TextField("Search for city...", text: $viewModel.searchTerm, onCommit: {
                 viewModel.fetchAllWeather(by: .cityName(viewModel.searchTerm))
+                viewModel.searchTerm = ""
             })
             .foregroundColor(.primary)
             .padding(10)
@@ -67,6 +68,7 @@ extension ContentView {
         .animation(.spring())
         .offset(y:viewState.height > 100 ? 30 : 60)
         .onTapGesture(count: /*@START_MENU_TOKEN@*/1/*@END_MENU_TOKEN@*/, perform: {
+            UIApplication.shared.endEditing()
             self.viewState = .zero
         })
     }

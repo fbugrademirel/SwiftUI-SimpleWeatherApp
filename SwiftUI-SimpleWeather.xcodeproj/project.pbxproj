@@ -10,6 +10,7 @@
 		7C0101142568106E00E22526 /* Extension+Color.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C0101132568106E00E22526 /* Extension+Color.swift */; };
 		7C01011A2568151400E22526 /* FiveDayForecastModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C0101192568151400E22526 /* FiveDayForecastModel.swift */; };
 		7C01011E2568159400E22526 /* Common.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C01011D2568159400E22526 /* Common.swift */; };
+		7C010122256843EC00E22526 /* Extension+UIApplication.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C010121256843EC00E22526 /* Extension+UIApplication.swift */; };
 		7C5CA0032567111B00C601A0 /* ForecastCellViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C5CA0022567111B00C601A0 /* ForecastCellViewModel.swift */; };
 		7C5CA0062567169400C601A0 /* ForecastListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C5CA0052567169400C601A0 /* ForecastListView.swift */; };
 		7C7D5C892565EAE60020A602 /* CurrentWeatherView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C7D5C882565EAE60020A602 /* CurrentWeatherView.swift */; };
@@ -28,6 +29,7 @@
 		7C0101132568106E00E22526 /* Extension+Color.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Extension+Color.swift"; sourceTree = "<group>"; };
 		7C0101192568151400E22526 /* FiveDayForecastModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FiveDayForecastModel.swift; sourceTree = "<group>"; };
 		7C01011D2568159400E22526 /* Common.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Common.swift; sourceTree = "<group>"; };
+		7C010121256843EC00E22526 /* Extension+UIApplication.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Extension+UIApplication.swift"; sourceTree = "<group>"; };
 		7C5CA0022567111B00C601A0 /* ForecastCellViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ForecastCellViewModel.swift; sourceTree = "<group>"; };
 		7C5CA0052567169400C601A0 /* ForecastListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ForecastListView.swift; sourceTree = "<group>"; };
 		7C7D5C882565EAE60020A602 /* CurrentWeatherView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CurrentWeatherView.swift; sourceTree = "<group>"; };
@@ -59,6 +61,7 @@
 			isa = PBXGroup;
 			children = (
 				7C0101132568106E00E22526 /* Extension+Color.swift */,
+				7C010121256843EC00E22526 /* Extension+UIApplication.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -239,6 +242,7 @@
 				7CF6165C2565A2D0004DB6C8 /* ContentView.swift in Sources */,
 				7CF6165A2565A2D0004DB6C8 /* SwiftUI_SimpleWeatherApp.swift in Sources */,
 				7C01011A2568151400E22526 /* FiveDayForecastModel.swift in Sources */,
+				7C010122256843EC00E22526 /* Extension+UIApplication.swift in Sources */,
 				7CF616842565B2E7004DB6C8 /* CurrentWeatherViewModel.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
