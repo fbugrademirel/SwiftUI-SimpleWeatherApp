@@ -6,66 +6,114 @@
 //
 
 import Foundation
+import CoreLocation
 
-struct CurrentWeatherViewModel {
+final class CurrentWeatherViewModel: NSObject, ObservableObject {
     
-    let currentWeather: CurrentWeatherModel
+    //MARK: - Published
+    @Published var currentWeather: CurrentWeatherModel? = nil
+    @Published var forecastCellViewModels = [ForecastCellViewModel]()
+
+    //MARK: - Properties
+    var searchTerm: String = ""
+
+    private var locationManager: CLLocationManager = {
+            let lm = CLLocationManager()
+            lm.desiredAccuracy = kCLLocationAccuracyThreeKilometers
+            return lm
+    }()
     
-}
-
-//MARK: - CurrentViewModel Extension
-
-extension CurrentWeatherViewModel {
-    
-    struct CurrentWeatherModel {
-           let id: Int
-           let date: Date
-           let conditionID: Int
-           let conditionDescription: String
-           let cityName: String
-           let windSpeedDouble: Double
-           var windSpeedString: String {
-               return String(format: "%.0f", windSpeedDouble * 3.6) // in km/h
-           }
-           let windDirectionInt: Int
-           let windDirectionStringForSFImage = "arrow.up"
-
-           let temperatureDouble: Double
-           var temperatureString: String {
-               return String(format: "%.0f", temperatureDouble)
-           }
-
-           var conditionNameForSFIcons: String {
-               CommonWeatherModelOpearaions.getSFIconsForWeatherCondition(conditionID)
-           }
-    }
-    
-    struct CommonWeatherModelOpearaions {
-            static func getSFIconsForWeatherCondition(_ conditionID: Int) -> String {
-                switch conditionID {
-                case 200 ... 232:
-                    return "cloud.bolt.rain"
-                case 300 ... 321:
-                    return "cloud.drizzle"
-                case 500 ... 531:
-                    return "cloud.rain"
-                case 600 ... 622:
-                    return "cloud.snow"
-                case 700 ... 781:
-                    return "cloud.fog"
-                case 800:
-                    return "sun.max"
-                case 801:
-                    return "cloud.sun"
-                case 802:
-                    return "cloud.sun"
-                case 803:
-                    return "cloud.sun"
-                case 804:
-                    return "cloud"
-                default:
-                    return "cloud"
-                }
+    private var location: CLLocation? = nil {
+        didSet {
+            if let location = location {
+                fetchWeather(for: .coordinates(location))
+                fetchForecast(for: .coordinates(location))
             }
         }
+    }
+    
+    //MARK: - Methods
+    func load() {
+        locationManager.delegate = self
+        locationManager.requestWhenInUseAuthorization()
+        locationManager.requestLocation()
+    }
+    
+    func fetchAllWeather(by: WeatherDataAPI.LocationInformation) {
+        if let cityName = self.searchTerm.addingPercentEncoding(withAllowedCharacters: .urlHostAllowed) {
+            fetchWeather(for: .cityName(cityName))
+            fetchForecast(for: .cityName(cityName))
+        }
+    }
+    
+    //MARK: - Private Methods
+    private func fetchWeather(for location: WeatherDataAPI.LocationInformation) {
+        
+        WeatherDataAPI().getWeatherInfo(by: location) { [weak self] result in
+            guard let self = self else { return }
+            switch result {
+            case .success(let data):
+                DispatchQueue.main.async {
+                    self.currentWeather = CurrentWeatherModel(id: data.id,
+                                                              date: Date(timeIntervalSince1970: data.dt),
+                                                              conditionID: data.weather[0].id,
+                                                              conditionDescription: data.weather[0].description,
+                                                              cityName: data.name,
+                                                              windSpeedDouble: data.wind.speed,
+                                                              windDirectionInt: data.wind.deg ?? 0,
+                                                              temperatureDouble: data.main.temp)
+                }
+            case .failure(let error):
+                print(error.localizedDescription)
+            }
+        }
+    }
+    
+    private func fetchForecast(for location: WeatherDataAPI.LocationInformation) {
+        WeatherDataAPI().getForecastWeatherInfo(by: location) { [weak self] result in
+            guard let self = self else { return }
+            switch result {
+            case .success(let data):
+                DispatchQueue.main.async {
+                    let forecastCellViewModels = data.list.map { (forecastWeatherData) -> ForecastCellViewModel in
+                        let forecast = Forecast(date: Date(timeIntervalSince1970: forecastWeatherData.dt),
+                                                temperatureDouble: forecastWeatherData.main.temp,
+                                                conditionID: forecastWeatherData.weather[0].id,
+                                                windSpeed: forecastWeatherData.wind.speed,
+                                                windDirection: forecastWeatherData.wind.deg ?? 0)
+                    
+                        let vm = ForecastCellViewModel(imageString: forecast.conditionNameForSFIcons,
+                                                       temperature: forecast.temperatureString,
+                                                       date: forecast.dateString,
+                                                       windSpeed: forecast.windSpeedString,
+                                                       windAngle: forecast.windDirection,
+                                                       windDirectionStringForSGIcon: forecast.windDirectionStringForSFImage)
+                        
+                        return vm
+                    }
+                    self.forecastCellViewModels = forecastCellViewModels
+                }
+                
+            
+            case .failure(let error):
+                print(error.localizedDescription)
+            }
+        }
+    }
 }
+
+//MARK: - Location Manager Extension
+extension CurrentWeatherViewModel: CLLocationManagerDelegate {
+    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+        if let location = locations.last {
+            manager.stopUpdatingLocation()
+            self.location = location
+        }
+    }
+
+    func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
+        print(error.localizedDescription)
+    }
+}
+
+
