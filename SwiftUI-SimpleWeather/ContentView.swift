@@ -15,43 +15,12 @@ struct ContentView: View {
     init() {
         self.viewModel.load()
     }
-
+    
     var body: some View {
-        
         NavigationView {
-        
             ZStack {
-                VStack {
-                    searchView()
-                    ScrollView(showsIndicators: false) {
-                        if let model = self.viewModel.currentWeather {
-                            CurrentWeatherView(viewModel: model)
-                        }
-                    }.animation(.easeIn(duration: 0.2))
-                }
-                .background(Color(UIColor.lightGray))
-                .mask(Rectangle().cornerRadius(20))
-                .animation(.spring())
-                .offset(y:viewState.height > 100 ? 30 : 60)
-                .onTapGesture(count: /*@START_MENU_TOKEN@*/1/*@END_MENU_TOKEN@*/, perform: {
-                    self.viewState = .zero
-                })
-                
-                ForecastListView(forecasts: viewModel.forecastCellViewModels)
-                    .navigationBarHidden(true)
-                    .offset(y: viewState.height + 400)
-                    .animation(.spring())
-                    .gesture(DragGesture()
-                            .onChanged({ (value) in
-                                self.viewState = value.translation
-                            })
-                            .onEnded({ (value) in
-                                if self.viewState.height > 200 {
-                                    self.viewState = CGSize(width: 0, height: 800)
-                                } else if self.viewState.height < 100 {
-                                    self.viewState = CGSize(width: 0, height: 0)
-                                }
-                            }))
+                staticUpperPart()
+                draggableLowerPart()
             }.edgesIgnoringSafeArea(.all)
         }
     }
@@ -63,6 +32,7 @@ struct ContentView_Previews: PreviewProvider {
     }
 }
 
+//MARK: - Extension
 extension ContentView {
     fileprivate func searchView() -> some View {
         return HStack {
@@ -82,4 +52,41 @@ extension ContentView {
         .cornerRadius(10)
         .padding(10)
     }
+    
+    fileprivate func staticUpperPart() -> some View {
+        return VStack {
+            searchView()
+            ScrollView(showsIndicators: false) {
+                if let model = self.viewModel.currentWeather {
+                    CurrentWeatherView(viewModel: model)
+                }
+            }
+        }
+        .background(Color.setAppColor(for: .current))
+        .mask(Rectangle().cornerRadius(20))
+        .animation(.spring())
+        .offset(y:viewState.height > 100 ? 30 : 60)
+        .onTapGesture(count: /*@START_MENU_TOKEN@*/1/*@END_MENU_TOKEN@*/, perform: {
+            self.viewState = .zero
+        })
+    }
+    
+    fileprivate func draggableLowerPart() -> some View {
+        return ForecastListView(forecasts: viewModel.forecastCellViewModels)
+            .navigationBarHidden(true)
+            .offset(y: viewState.height + 430)
+            .animation(.spring())
+            .gesture(DragGesture()
+                        .onChanged({ (value) in
+                            self.viewState = value.translation
+                        })
+                        .onEnded({ (value) in
+                            if self.viewState.height > 200 {
+                                self.viewState = CGSize(width: 0, height: 800)
+                            } else if self.viewState.height < 100 {
+                                self.viewState = CGSize(width: 0, height: 0)
+                            }
+                        }))
+    }
 }
+

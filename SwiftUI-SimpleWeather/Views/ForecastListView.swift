@@ -20,15 +20,16 @@ struct ForecastListView: View {
                     .fontWeight(.ultraLight)
                     .font(.system(size: 24))
             
-                ScrollView(showsIndicators: false) {
+            ScrollView(showsIndicators: false ) {
                     ForEach(forecasts) { forecast in
                         ForecastCellView(forecast: forecast)
-                            .listRowInsets(EdgeInsets())
+                            
                 }
             }
+            
         }.frame(width: screenSize.width)
-        .background(Color(UIColor.yellow))
-        .foregroundColor(Color(UIColor.systemTeal))
+        .foregroundColor(Color(UIColor.systemBackground))
+        .background(Color.setAppColor(for: .forecast))
         .cornerRadius(20)
     }
 }
@@ -38,29 +39,46 @@ struct ForecastCellView: View {
     let forecast: ForecastCellViewModel
     
     var body: some View {
-        HStack {
+        
+        HStack(alignment: .center) {
+
+            Spacer()
+            
             Text(forecast.date)
                 .fontWeight(.light)
-                .font(.system(size: 16))
-                .padding(.zero)
+                .font(.system(size: 12))
+                .frame(maxWidth: .infinity)
+                .lineLimit(1)
+                .padding(.leading, 10)
+            
             Text("\(forecast.temperature)°C")
-                .font(.system(size: 20))
+                
+                .font(.system(size: 24))
                 .fontWeight(.light)
+                .frame(maxWidth: .infinity)
+
             Image(systemName: forecast.imageString)
                 .resizable()
                 .aspectRatio(contentMode: .fit)
-                .frame(width: 50, height: 50, alignment: .center)
-                .padding()
+                .frame(width: 40, height: 40, alignment: .center)
+                .frame(maxWidth: .infinity)
+
+            Text("\(forecast.windSpeed)km/h")
+                .fontWeight(.light)
+                .font(.system(size: 16))
+                .frame(maxWidth: .infinity)
+                .padding(.zero)
+            
             Image(systemName: forecast.windDirectionStringForSGIcon)
                 .resizable()
                 .aspectRatio(contentMode: .fit)
-                .frame(width: 20, height: 40, alignment: .center)
+                .frame(width: 20, height: 20, alignment: .center)
                 .rotationEffect(Angle(degrees: Double(forecast.windAngle)))
-                .animation(.interpolatingSpring(stiffness: 10, damping: 1))
-            Text("\(forecast.windSpeed)km/h")
-                .fontWeight(.light)
-                .font(.system(size: 20))
-        }.foregroundColor(Color(UIColor.systemTeal))
+                .padding(.trailing, 20)
+
+            Spacer()
+
+        }.foregroundColor(Color(UIColor.systemBackground))
     }
 }
 

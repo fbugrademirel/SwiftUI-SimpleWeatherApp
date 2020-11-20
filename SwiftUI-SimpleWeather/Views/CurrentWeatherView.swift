@@ -18,7 +18,7 @@ struct CurrentWeatherView: View {
             Text(viewModel.cityName)
                 .fontWeight(.light)
                 .font(.system(size: 32))
-
+            
             Text("\(viewModel.temperatureString)°C" )
                 .fontWeight(.light)
                 .font(.system(size: 60))
@@ -28,14 +28,17 @@ struct CurrentWeatherView: View {
                 Spacer()
                 
                 VStack {
+                    
                     Image(systemName: viewModel.windDirectionStringForSFImage)
                         .resizable()
                         .aspectRatio(contentMode: .fit)
                         .frame(width: 20, height: 50, alignment: /*@START_MENU_TOKEN@*/.center/*@END_MENU_TOKEN@*/)
                         .rotationEffect(Angle(degrees: Double(viewModel.windDirectionInt)))
                         .animation(.interpolatingSpring(stiffness: 10, damping: 1))
+                    
                     Text("\(viewModel.windSpeedString)km/h")
-                        .padding()
+                        .fontWeight(.light)
+                        .font(.system(size: 20))
                 }
                 
                 Image(systemName: viewModel.conditionNameForSFIcons)
@@ -50,7 +53,8 @@ struct CurrentWeatherView: View {
                 .font(.system(size: 20))
     
             Spacer()
-        }.foregroundColor(Color(UIColor.systemTeal)).padding()
+            
+        }.foregroundColor(Color(UIColor.white)).padding()
     }
 }
 

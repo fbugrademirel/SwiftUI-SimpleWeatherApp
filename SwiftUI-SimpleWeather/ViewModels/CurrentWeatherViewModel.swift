@@ -7,13 +7,14 @@
 
 import Foundation
 import CoreLocation
-import SwiftUI
 
 final class CurrentWeatherViewModel: NSObject, ObservableObject {
     
+    //MARK: - Published
     @Published var currentWeather: CurrentWeatherModel? = nil
     @Published var forecastCellViewModels = [ForecastCellViewModel]()
 
+    //MARK: - Properties
     var searchTerm: String = ""
 
     private var locationManager: CLLocationManager = {
@@ -31,13 +32,13 @@ final class CurrentWeatherViewModel: NSObject, ObservableObject {
         }
     }
     
-    
+    //MARK: - Methods
     func load() {
         locationManager.delegate = self
         locationManager.requestWhenInUseAuthorization()
         locationManager.requestLocation()
     }
-
+    
     func fetchAllWeather(by: WeatherDataAPI.LocationInformation) {
         if let cityName = self.searchTerm.addingPercentEncoding(withAllowedCharacters: .urlHostAllowed) {
             fetchWeather(for: .cityName(cityName))
@@ -45,6 +46,7 @@ final class CurrentWeatherViewModel: NSObject, ObservableObject {
         }
     }
     
+    //MARK: - Private Methods
     private func fetchWeather(for location: WeatherDataAPI.LocationInformation) {
         
         WeatherDataAPI().getWeatherInfo(by: location) { [weak self] result in
@@ -98,11 +100,9 @@ final class CurrentWeatherViewModel: NSObject, ObservableObject {
             }
         }
     }
-    
-    
 }
 
-//MARK: - Location Manager
+//MARK: - Location Manager Extension
 extension CurrentWeatherViewModel: CLLocationManagerDelegate {
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         if let location = locations.last {

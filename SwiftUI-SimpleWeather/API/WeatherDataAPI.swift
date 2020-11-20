@@ -67,6 +67,7 @@ struct WeatherDataAPI {
         }
 }
 
+//MARK: - Extension
 extension WeatherDataAPI {
     
     enum LocationInformation {
