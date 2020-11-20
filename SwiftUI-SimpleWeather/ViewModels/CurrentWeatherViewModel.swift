@@ -7,10 +7,13 @@
 
 import Foundation
 import CoreLocation
+import SwiftUI
 
 final class CurrentWeatherViewModel: NSObject, ObservableObject {
     
     @Published var currentWeather: CurrentWeatherModel? = nil
+    @Published var forecastCellViewModels = [ForecastCellViewModel]()
+
     var searchTerm: String = ""
 
     private var locationManager: CLLocationManager = {
@@ -23,9 +26,11 @@ final class CurrentWeatherViewModel: NSObject, ObservableObject {
         didSet {
             if let location = location {
                 fetchWeather(for: .coordinates(location))
+                fetchForecast(for: .coordinates(location))
             }
         }
     }
+    
     
     func load() {
         locationManager.delegate = self
@@ -33,16 +38,17 @@ final class CurrentWeatherViewModel: NSObject, ObservableObject {
         locationManager.requestLocation()
     }
 
-    func fetchCurrentWeather(by: WeatherDataAPI.LocationInformation) {
+    func fetchAllWeather(by: WeatherDataAPI.LocationInformation) {
         if let cityName = self.searchTerm.addingPercentEncoding(withAllowedCharacters: .urlHostAllowed) {
             fetchWeather(for: .cityName(cityName))
+            fetchForecast(for: .cityName(cityName))
         }
     }
     
-    private func fetchWeather(for info: WeatherDataAPI.LocationInformation) {
+    private func fetchWeather(for location: WeatherDataAPI.LocationInformation) {
         
-        WeatherDataAPI().getWeatherInfo(by: info) { [weak self] result in
-            guard let self = self else {return}
+        WeatherDataAPI().getWeatherInfo(by: location) { [weak self] result in
+            guard let self = self else { return }
             switch result {
             case .success(let data):
                 DispatchQueue.main.async {
@@ -60,6 +66,40 @@ final class CurrentWeatherViewModel: NSObject, ObservableObject {
             }
         }
     }
+    
+    private func fetchForecast(for location: WeatherDataAPI.LocationInformation) {
+        WeatherDataAPI().getForecastWeatherInfo(by: location) { [weak self] result in
+            guard let self = self else { return }
+            switch result {
+            case .success(let data):
+                DispatchQueue.main.async {
+                    let forecastCellViewModels = data.list.map { (forecastWeatherData) -> ForecastCellViewModel in
+                        let forecast = Forecast(date: Date(timeIntervalSince1970: forecastWeatherData.dt),
+                                                temperatureDouble: forecastWeatherData.main.temp,
+                                                conditionID: forecastWeatherData.weather[0].id,
+                                                windSpeed: forecastWeatherData.wind.speed,
+                                                windDirection: forecastWeatherData.wind.deg ?? 0)
+                    
+                        let vm = ForecastCellViewModel(imageString: forecast.conditionNameForSFIcons,
+                                                       temperature: forecast.temperatureString,
+                                                       date: forecast.dateString,
+                                                       windSpeed: forecast.windSpeedString,
+                                                       windAngle: forecast.windDirection,
+                                                       windDirectionStringForSGIcon: forecast.windDirectionStringForSFImage)
+                        
+                        return vm
+                    }
+                    self.forecastCellViewModels = forecastCellViewModels
+                }
+                
+            
+            case .failure(let error):
+                print(error.localizedDescription)
+            }
+        }
+    }
+    
+    
 }
 
 //MARK: - Location Manager

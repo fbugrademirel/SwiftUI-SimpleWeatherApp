@@ -35,6 +35,35 @@ struct CurrentWeatherModel {
     }
 }
 
+struct FiveDayForecastModel {
+        let forecastList: [Forecast]
+        let cityName: String
+    }
+
+    struct Forecast {
+        let date: Date
+        var dateString: String {
+            let dateFormatter = DateFormatter()
+            dateFormatter.locale = .current
+            dateFormatter.dateFormat = "dd MMM HH:mm"
+            return dateFormatter.string(from: date)
+        }
+        let temperatureDouble: Double
+        var temperatureString: String {
+            return String(format: "%.0f", temperatureDouble)
+        }
+        let conditionID: Int
+        var conditionNameForSFIcons: String {
+            CommonWeatherModelOpearaions.getSFIconsForWeatherCondition(conditionID)
+        }
+        let windSpeed: Double
+        var windSpeedString: String {
+            return String(format: "%.0f", windSpeed * 3.6) // in km/h
+        }
+        let windDirection: Int
+        let windDirectionStringForSFImage = "arrow.up"
+    }
+
 struct CommonWeatherModelOpearaions {
     static func getSFIconsForWeatherCondition(_ conditionID: Int) -> String {
         switch conditionID {

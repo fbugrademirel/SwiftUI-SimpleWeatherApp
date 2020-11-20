@@ -13,43 +13,45 @@ struct CurrentWeatherView: View {
     
     var body: some View {
         
-        VStack(alignment: .trailing, spacing: 5) {
-            
+        VStack(alignment: .trailing, spacing: 0) {
+        
             Text(viewModel.cityName)
                 .fontWeight(.light)
                 .font(.system(size: 32))
-                .padding(.trailing, 20)
 
-            Image(systemName: viewModel.conditionNameForSFIcons)
-                .resizable()
-                .frame(width: 150, height: 150, alignment: /*@START_MENU_TOKEN@*/.center/*@END_MENU_TOKEN@*/)
-                .aspectRatio(contentMode: .fit)
-                .padding(20)
+            Text("\(viewModel.temperatureString)°C" )
+                .fontWeight(.light)
+                .font(.system(size: 60))
+                
+            HStack {
+                
+                Spacer()
+                
+                VStack {
+                    Image(systemName: viewModel.windDirectionStringForSFImage)
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                        .frame(width: 20, height: 50, alignment: /*@START_MENU_TOKEN@*/.center/*@END_MENU_TOKEN@*/)
+                        .rotationEffect(Angle(degrees: Double(viewModel.windDirectionInt)))
+                        .animation(.interpolatingSpring(stiffness: 10, damping: 1))
+                    Text("\(viewModel.windSpeedString)km/h")
+                        .padding()
+                }
+                
+                Image(systemName: viewModel.conditionNameForSFIcons)
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
+                    .frame(width: 150,height: 150, alignment: .center)
+                    .padding()
+                    .animation(.easeIn)
+            }
             
             Text(viewModel.dateString)
                 .fontWeight(.light)
                 .font(.system(size: 20))
-                .padding(.trailing, 20)
-            
-            HStack(alignment: .center, spacing: 0) {
-                
-                Spacer()
-                
-                Text(viewModel.temperatureString)
-                    .fontWeight(.light)
-                    .font(.system(size: 60))
-                    .padding(.trailing, 0)
-                
-                Text("°C")
-                    .fontWeight(.light)
-                    .font(.system(size: 60))
-                    .padding(.leading, 0)
-                    .padding(.trailing, 20)
-            }
-            
+    
             Spacer()
-            
-        }.foregroundColor(.blue)
+        }.foregroundColor(Color(UIColor.systemTeal)).padding()
     }
 }
 
@@ -59,5 +61,3 @@ struct CurrentWeatherView_Previews: PreviewProvider {
         CurrentWeatherView(viewModel: CurrentWeatherModel(id: 0, date: Date(), conditionID: 600, conditionDescription: "Cloudy", cityName: "Stockholm", windSpeedDouble: 14.00, windDirectionInt: 50, temperatureDouble: 15))
     }
 }
-
-//viewModel.currentWeather?.conditionNameForSFIcons
