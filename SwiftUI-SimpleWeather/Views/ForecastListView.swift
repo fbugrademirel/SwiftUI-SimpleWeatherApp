@@ -16,11 +16,21 @@ struct ForecastListView: View {
         
         return VStack{
             
-                Text("5 Day Forecasts")
-                    .fontWeight(.ultraLight)
-                    .font(.system(size: 24))
+                VStack{
+                    Image(systemName: "minus")
+                        .resizable()
+                        .foregroundColor(.white)
+                        .frame(width: 50, height: 5, alignment: .center)
+                        .padding(.top, 5)
+                        .aspectRatio(contentMode: .fit)
+    
+                    Text("5 Day Forecast")
+                        .fontWeight(.ultraLight)
+                        .font(.system(size: 24))
+                        .padding(.top, 3)
+                }
             
-            ScrollView(showsIndicators: false ) {
+                ScrollView(showsIndicators: false ) {
                     ForEach(forecasts) { forecast in
                         ForecastCellView(forecast: forecast)
                             
@@ -28,7 +38,7 @@ struct ForecastListView: View {
             }
             
         }.frame(width: screenSize.width)
-        .foregroundColor(Color(UIColor.systemBackground))
+        .foregroundColor(Color(UIColor.white))
         .background(Color.setAppColor(for: .forecast))
         .cornerRadius(20)
     }

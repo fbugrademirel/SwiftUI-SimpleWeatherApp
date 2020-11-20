@@ -48,10 +48,14 @@ struct CurrentWeatherView: View {
                     .padding()
             }
             
+            Text(viewModel.conditionDescription)
+                .fontWeight(.light)
+                .font(.system(size: 30))
+            
             Text(viewModel.dateString)
                 .fontWeight(.light)
                 .font(.system(size: 20))
-    
+            
             Spacer()
             
         }.foregroundColor(Color(UIColor.white)).padding()
