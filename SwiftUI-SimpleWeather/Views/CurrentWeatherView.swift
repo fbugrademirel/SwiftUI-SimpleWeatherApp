@@ -43,7 +43,6 @@ struct CurrentWeatherView: View {
                     .aspectRatio(contentMode: .fit)
                     .frame(width: 150,height: 150, alignment: .center)
                     .padding()
-                    .animation(.easeIn)
             }
             
             Text(viewModel.dateString)

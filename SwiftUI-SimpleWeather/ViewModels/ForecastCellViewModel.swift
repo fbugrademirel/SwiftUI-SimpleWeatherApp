@@ -7,7 +7,9 @@
 
 import Foundation
 
-struct ForecastCellViewModel {
+struct ForecastCellViewModel: Identifiable {
+    
+    let id = UUID()
     let imageString: String
     let temperature: String
     let date: String

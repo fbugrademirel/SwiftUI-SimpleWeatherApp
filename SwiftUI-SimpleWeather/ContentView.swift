@@ -10,32 +10,49 @@ import SwiftUI
 struct ContentView: View {
     
     @ObservedObject private var viewModel = CurrentWeatherViewModel()
-    @State private var scrollOffset = CGPoint()
+    @State private var viewState = CGSize.zero
     
     init() {
         self.viewModel.load()
-        UITableView.appearance().backgroundColor = .clear
-        UITableViewCell.appearance().backgroundColor = .clear
     }
 
     var body: some View {
         
         NavigationView {
         
-            VStack {
-                searchView()
-                ScrollView(showsIndicators: false) {
-                    if let model = self.viewModel.currentWeather {
-                        CurrentWeatherView(viewModel: model)
-                    }
-                }.animation(.easeOut(duration: 0.2))
-                Text("5 Days Forecast")
-                    .padding(.zero)
-                    .foregroundColor(Color(UIColor.systemTeal))
-                    .font(.system(size: 20))
+            ZStack {
+                VStack {
+                    searchView()
+                    ScrollView(showsIndicators: false) {
+                        if let model = self.viewModel.currentWeather {
+                            CurrentWeatherView(viewModel: model)
+                        }
+                    }.animation(.easeIn(duration: 0.2))
+                }
+                .background(Color(UIColor.lightGray))
+                .mask(Rectangle().cornerRadius(20))
+                .animation(.spring())
+                .offset(y:viewState.height > 100 ? 30 : 60)
+                .onTapGesture(count: /*@START_MENU_TOKEN@*/1/*@END_MENU_TOKEN@*/, perform: {
+                    self.viewState = .zero
+                })
+                
                 ForecastListView(forecasts: viewModel.forecastCellViewModels)
                     .navigationBarHidden(true)
-            }
+                    .offset(y: viewState.height + 400)
+                    .animation(.spring())
+                    .gesture(DragGesture()
+                            .onChanged({ (value) in
+                                self.viewState = value.translation
+                            })
+                            .onEnded({ (value) in
+                                if self.viewState.height > 200 {
+                                    self.viewState = CGSize(width: 0, height: 800)
+                                } else if self.viewState.height < 100 {
+                                    self.viewState = CGSize(width: 0, height: 0)
+                                }
+                            }))
+            }.edgesIgnoringSafeArea(.all)
         }
     }
 }

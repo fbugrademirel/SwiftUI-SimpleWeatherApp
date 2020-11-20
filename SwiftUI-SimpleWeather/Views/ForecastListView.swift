@@ -10,12 +10,26 @@ import SwiftUI
 struct ForecastListView: View {
     
     let forecasts: [ForecastCellViewModel]
+    let screenSize = UIScreen.main.bounds.size
 
     var body: some View {
         
-        List(self.forecasts, id:\.date) { forecast in
-            ForecastCellView(forecast: forecast)
-        }.mask(Rectangle().cornerRadius(25))
+        return VStack{
+            
+                Text("5 Day Forecasts")
+                    .fontWeight(.ultraLight)
+                    .font(.system(size: 24))
+            
+                ScrollView(showsIndicators: false) {
+                    ForEach(forecasts) { forecast in
+                        ForecastCellView(forecast: forecast)
+                            .listRowInsets(EdgeInsets())
+                }
+            }
+        }.frame(width: screenSize.width)
+        .background(Color(UIColor.yellow))
+        .foregroundColor(Color(UIColor.systemTeal))
+        .cornerRadius(20)
     }
 }
 
@@ -37,7 +51,6 @@ struct ForecastCellView: View {
                 .aspectRatio(contentMode: .fit)
                 .frame(width: 50, height: 50, alignment: .center)
                 .padding()
-                .animation(.easeIn)
             Image(systemName: forecast.windDirectionStringForSGIcon)
                 .resizable()
                 .aspectRatio(contentMode: .fit)
